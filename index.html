@@ -491,6 +491,17 @@ main .cards figure,main .tw,main .stats div,main .vals>div,main .tl div,main .se
 main{perspective:none}
 main>*{transform:none;-webkit-backface-visibility:visible;backface-visibility:visible;box-shadow:none;filter:none}
 }
+
+/* ===== 페이지 전환 후 재등장 애니메이션 제거 (책장 넘김 전환 자체는 유지) ===== */
+.on:not(.hero) .in>*,
+.on :is(.stats>div,.vals>div,.tl>div,.seasons>div,.champ>div,.steps>div,.htl>div,.cards>figure,.who>span),
+.on tbody tr,.on:not(.hero) h2::after,
+.on.band img,.on .ban img,.on.band figcaption,
+.on .fit figure,.on.fit figure,.on.fit figure img,
+.panel:not([hidden]){animation:none!important}
+.late.late,.late.late.seen{opacity:1!important;transform:none!important;transition:none!important}
+/* 메인(히어로) 첫 진입 연출은 최초 로딩 시에만 재생 */
+html:not(.intro) .hero.on .in>*,html:not(.intro) .hero.on h1 .ch,html:not(.intro) .hero.on .in>.tag{animation:none!important}
 </style>
 </head>
 <body>
@@ -700,6 +711,9 @@ tabs.forEach(function(o){var on=o===t;o.setAttribute('aria-selected',on);documen
 </script>
 <script>
 (function(){
+document.documentElement.classList.add('intro');setTimeout(function(){document.documentElement.classList.remove('intro')},5000);
+function authOk(){return !!(window.CPAuth&&window.CPAuth.ok())}
+function askAuth(t){if(window.CPAuth)window.CPAuth.require(function(){go(t)});else alert('회원 전용 콘텐츠입니다. 로그인 후 이용해 주세요.')}
 var m=document.getElementById('top'),pg=[].slice.call(m.children),n=pg.length,cur=0,busy=false,pend=null,D=1000,E='cubic-bezier(.65,0,.35,1)';
 var dots=document.getElementById('dots'),ct=document.getElementById('ct'),pv=document.getElementById('pv'),nx=document.getElementById('nx'),el=document.getElementById('el'),er=document.getElementById('er');
 var links=[].slice.call(document.querySelectorAll('nav a'));
@@ -732,12 +746,13 @@ function goLite(f,t){var fw=t>f,top=fw?pg[t]:pg[f];pg[t].scrollTop=0;show(t);cur
 top.style.zIndex=5;top.style.transition='none';top.style.clipPath=fw?'inset(0 50% 0 50%)':'inset(0 0 0 0)';void top.offsetWidth;
 var ms=Math.round(D*.8);top.style.transition='clip-path '+ms+'ms '+E;top.style.clipPath=fw?'inset(0 0 0 0)':'inset(0 50% 0 50%)';
 setTimeout(function(){top.style.clipPath='';top.style.transition='';top.style.zIndex=1;hide(f);fin()},ms+40)}
-function go(t){t=Math.max(0,Math.min(n-1,t));if(busy){pend=t;return}if(t===cur)return;busy=true;var f=cur,d;if(lite()){goLite(f,t);return}
+function go(t){t=Math.max(0,Math.min(n-1,t));if(t>0&&!authOk()){askAuth(t);return}if(busy){pend=t;return}if(t===cur)return;busy=true;var f=cur,d;if(lite()){goLite(f,t);return}
 if(t>f){d=mk(pg[f]);pg[t].scrollTop=0;show(t);hide(f);cur=t;upd();anim(d,0,1,function(){rm(d);fin()})}
 else{pg[t].scrollTop=0;d=mk(pg[t]);cur=t;upd();anim(d,1,0,function(){show(t);hide(f);rm(d);fin()})}}
 [pv,el].forEach(function(b){b.onclick=function(){go(cur-1)}});[nx,er].forEach(function(b){b.onclick=function(){go(cur+1)}});
 addEventListener('keydown',function(e){if(e.target.closest&&e.target.closest('input,textarea'))return;if(e.key==='ArrowRight')go(cur+1);else if(e.key==='ArrowLeft')go(cur-1)});
 document.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');if(!a)return;var t=document.querySelector(a.getAttribute('href'));if(!t)return;var i=pageOf(t);if(i<0)return;e.preventDefault();go(i)});
+document.addEventListener('cpauth',function(e){if(!e.detail.ok&&cur>0)go(0)});
 /* 드래그 */
 var dg=null,moved=false;
 m.addEventListener('dragstart',function(e){e.preventDefault()});
@@ -745,7 +760,7 @@ m.addEventListener('click',function(e){if(moved){e.stopPropagation();e.preventDe
 m.addEventListener('pointerdown',function(e){if(busy||e.button>0||!e.isPrimary)return;var t=e.target;if(t.closest('input,textarea,select'))return;var w=t.closest('.tw');if(w&&w.scrollWidth>w.clientWidth+2)return;dg={x:e.clientX,y:e.clientY,t:performance.now(),mode:0,id:e.pointerId}});
 m.addEventListener('pointermove',function(e){if(!dg||e.pointerId!==dg.id)return;var dx=e.clientX-dg.x,dy=e.clientY-dg.y;
 if(dg.mode===2)return;
-if(dg.mode===0&&lite()&&Math.abs(dx)>=8&&Math.abs(dx)>Math.abs(dy)*1.2){if((dx<0&&cur<n-1)||(dx>0&&cur>0)){dg.mode=2;dg.dir=dx<0?1:-1;moved=true;try{m.setPointerCapture(e.pointerId)}catch(_){}}else{dg=null}return}
+if(dg.mode===0&&(lite()||(cur===0&&!authOk()))&&Math.abs(dx)>=8&&Math.abs(dx)>Math.abs(dy)*1.2){if((dx<0&&cur<n-1)||(dx>0&&cur>0)){dg.mode=2;dg.dir=dx<0?1:-1;moved=true;try{m.setPointerCapture(e.pointerId)}catch(_){}}else{dg=null}return}
 if(dg.mode===0){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;
 if(Math.abs(dx)>Math.abs(dy)*1.2){
 if(dx<0&&cur<n-1){dg.dir=1;busy=true;dg.d=mk(pg[cur]);pg[cur+1].scrollTop=0;show(cur+1);hide(cur)}
@@ -831,7 +846,7 @@ function pr(p){var m=p.scrollHeight-p.clientHeight;bar.style.transform='scaleX('
 main.addEventListener('scroll',function(e){var p=e.target;if(p.classList&&p.classList.contains('on'))pr(p)},true);
 function off(el,p){var y=0;while(el&&el!==p){y+=el.offsetTop;el=el.offsetParent}return y}
 var ios=new Map();
-function arm(p){if(!mob.matches)return;
+function arm(p){return;/* 스크롤 재등장 효과 제거 */if(!mob.matches)return;
 var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('seen');io.unobserve(en.target)}})},{root:p,rootMargin:'0px 0px -6% 0px',threshold:.1});
 var n=0;[].forEach.call(p.querySelectorAll('.gl,.tw,.steps>div,.seasons>div,.who,.ban,.note'),function(el){if(off(el,p)-p.scrollTop>p.clientHeight-30){el.style.setProperty('--d',n++%4);el.classList.add('late');io.observe(el)}});ios.set(p,io)}
 function disarm(p){var io=ios.get(p);if(io){io.disconnect();ios.delete(p)}[].forEach.call(p.querySelectorAll('.late'),function(el){el.classList.remove('late','seen');el.style.removeProperty('--d')})}
@@ -845,6 +860,7 @@ pages.forEach(function(p){mo.observe(p,{attributes:true,attributeFilter:['class'
 <button class="jx" type="button" aria-label="닫기" data-close>×</button>
 <p class="jeye">MEMBERSHIP</p><h2 id="jTitle">THE CLUB PRIVÉ 회원</h2>
 <div class="jtabs" role="tablist"><button type="button" role="tab" id="jt2" aria-selected="true" aria-controls="jp2">로그인</button><button type="button" role="tab" id="jt1" aria-selected="false" aria-controls="jp1">회원가입</button></div>
+<p class="jprev" id="jGate" hidden>회원 전용 콘텐츠입니다. 로그인하시거나, 회원가입 후 승인이 완료되면 열람하실 수 있습니다.</p>
 <p class="jprev" id="jPrev" hidden>미리보기 모드 · 서버 연동 전이라 입력한 정보는 전송·저장되지 않습니다.</p>
 <form id="jp1" role="tabpanel" aria-labelledby="jt1" novalidate hidden>
 <div class="jf"><label for="name">성명</label><input id="name" name="name" type="text" autocomplete="name" required></div><div class="jf"><label for="email">이메일 (로그인 아이디)</label><input id="email" name="email" type="email" autocomplete="email" required inputmode="email"></div><div class="jf"><label for="phone">휴대폰 번호</label><input id="phone" name="phone" type="tel" autocomplete="tel" required inputmode="tel" placeholder="010-0000-0000"></div><div class="jf"><label for="pw">비밀번호</label><div class="pwr"><input id="pw" name="pw" type="password" autocomplete="new-password" required><button type="button" data-eye aria-label="비밀번호 표시">보기</button></div><small>영문과 숫자를 포함해 10자 이상</small></div><div class="jf"><label for="pw2">비밀번호 확인</label><div class="pwr"><input id="pw2" name="pw2" type="password" autocomplete="new-password" required><button type="button" data-eye aria-label="비밀번호 표시">보기</button></div></div><div class="jf"><label for="ref">추천인 (선택)</label><input id="ref" name="ref" type="text" autocomplete="off" ><small>추천 멤버 또는 한국산업양행 담당자</small></div>
@@ -872,7 +888,7 @@ pages.forEach(function(p){mo.observe(p,{attributes:true,attributeFilter:['class'
 var CONFIG={API_URL:'https://script.google.com/macros/s/AKfycbwhnNSU3vtvyPyfQFgU1cZvk8JnWz8TxX69evMwd0-D-5HYWb66kSBm5sZW3OiDUh-Uaw/exec'};
 var $=function(i){return document.getElementById(i)},dlg=$('joinDlg');
 if(!dlg||!dlg.showModal)return;
-var su=$('jp1'),li=$('jp2'),msg=$('jMsg'),prev=$('jPrev'),t1=$('jt1'),t2=$('jt2'),logged=false,lastBtn=null,TK='cp_token';
+var su=$('jp1'),li=$('jp2'),msg=$('jMsg'),prev=$('jPrev'),t1=$('jt1'),t2=$('jt2'),logged=false,lastBtn=null,TK='cp_token',after=null,gate=$('jGate');
 function g(n){return su.elements.namedItem(n)}
 function preview(){return !CONFIG.API_URL}
 function say(t,ok){msg.textContent=t;msg.className=ok?'ok':''}
@@ -881,16 +897,17 @@ function token(){try{return localStorage.getItem(TK)||''}catch(_){return ''}}
 function api(action,data){return fetch(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action:action},data))}).then(function(r){return r.json()})}
 function tab(n){var a=n===1;t1.setAttribute('aria-selected',a);t2.setAttribute('aria-selected',!a);su.hidden=!a;li.hidden=a;var f=a?su:li;f.insertBefore(msg,f.querySelector('.jsub'));say('')}
 t1.onclick=function(){tab(1)};t2.onclick=function(){tab(2)};
-function setLabel(t){document.querySelectorAll('[data-join]').forEach(function(b){b.textContent=t});document.documentElement.classList.toggle('authed',t==='로그아웃')}
+function setLabel(t){document.querySelectorAll('[data-join]').forEach(function(b){b.textContent=t});document.documentElement.classList.toggle('authed',t==='로그아웃');document.dispatchEvent(new CustomEvent('cpauth',{detail:{ok:t==='로그아웃'}}))}
 function toast(t){var e=$('jToast');if(!e){e=document.createElement('div');e.id='jToast';e.setAttribute('role','status');document.body.appendChild(e)}e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('show')},3500)}
 function logout(){var t=token();store('');logged=false;setLabel('로그인·가입');toast('로그아웃되었습니다.');if(t&&!preview())api('logout',{token:t}).catch(function(){})}
 document.addEventListener('click',function(e){var b=e.target.closest('[data-join]');if(!b)return;e.preventDefault();
 var hd=document.querySelector('header');if(hd&&hd.classList.contains('open')){var bg=hd.querySelector('.burger');if(bg)bg.click()}
 if(logged){logout();return}
-lastBtn=b;prev.hidden=!preview();tab(2);loadId();dlg.showModal()});
+after=null;gate.hidden=true;lastBtn=b;prev.hidden=!preview();tab(2);loadId();dlg.showModal()});
+window.CPAuth={ok:function(){return logged},require:function(cb){after=cb||null;gate.hidden=false;lastBtn=document.activeElement;prev.hidden=!preview();tab(2);loadId();if(!dlg.open)dlg.showModal()}};
 dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()});
 dlg.addEventListener('keydown',function(e){e.stopPropagation()});
-dlg.addEventListener('close',function(){if(lastBtn&&document.contains(lastBtn))lastBtn.focus()});
+dlg.addEventListener('close',function(){after=null;gate.hidden=true;if(lastBtn&&document.contains(lastBtn))lastBtn.focus()});
 [].forEach.call(dlg.querySelectorAll('[data-close]'),function(b){b.onclick=function(){dlg.close()}});
 [].forEach.call(dlg.querySelectorAll('[data-eye]'),function(b){b.onclick=function(){var i=b.previousElementSibling,s=i.type==='password';i.type=s?'text':'password';b.textContent=s?'숨김':'보기'}});
 var all=$('jAll'),cbs=[].slice.call(su.querySelectorAll('.jcb'));
@@ -921,7 +938,7 @@ if(!em||!pw){say('이메일과 비밀번호를 입력해 주세요.');return}
 if(preview()){say('미리보기 모드입니다. 서버 연동 후 로그인할 수 있습니다.');return}
 var lb=li.querySelector('.jsub');lb.disabled=true;say('로그인 중입니다… 잠시만 기다려 주세요.',1);
 try{var r=await api('login',{email:em,password:pw});
-if(r.ok){store(r.token);remember(em,pw);li.reset();logged=true;setLabel('로그아웃');dlg.close();toast((r.name?r.name+'님, ':'')+'로그인되었습니다.')}
+if(r.ok){store(r.token);remember(em,pw);li.reset();logged=true;var cb=after;after=null;setLabel('로그아웃');dlg.close();toast((r.name?r.name+'님, ':'')+'로그인되었습니다.');if(cb)setTimeout(cb,350)}
 else say(r.code==='pending'?'가입 신청이 접수되어 심사 중입니다. 승인 후 로그인하실 수 있습니다.':r.code==='locked'?'로그인 시도가 많아 잠시 후 다시 시도해 주세요.':'이메일 또는 비밀번호를 확인해 주세요.')
 }catch(err){console.error(err);say('서버 응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요.')}
 lb.disabled=false});
@@ -930,7 +947,7 @@ function loadId(){var v='';try{v=localStorage.getItem(UK)||''}catch(_){}li.eleme
 function remember(em,pw){try{if($('saveId').checked)localStorage.setItem(UK,em);else localStorage.removeItem(UK)}catch(_){}
 if($('savePw').checked&&window.PasswordCredential&&navigator.credentials){try{var p=navigator.credentials.store(new PasswordCredential({id:em,password:pw,name:em}));if(p&&p.catch)p.catch(function(){})}catch(_){}}}
 $('jForgot').onclick=function(){say('비밀번호 재설정은 담당 Membership Director에게 문의해 주세요.',1)};
-if(!preview()&&token()){api('me',{token:token()}).then(function(r){if(r.ok){logged=true;setLabel('로그아웃')}else store('')}).catch(function(){})}
+if(!preview()&&token()){logged=true;setLabel('로그아웃');api('me',{token:token()}).then(function(r){if(!r.ok){store('');logged=false;setLabel('로그인·가입')}}).catch(function(){})}
 })();
 </script>
 </body>
