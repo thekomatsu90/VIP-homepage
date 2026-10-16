@@ -472,6 +472,25 @@ nav .join:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .jx:focus-visible,.jtabs button:focus-visible,.jsub:focus-visible,.pwr button:focus-visible,.jlink:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 @media(max-width:640px){.jbox{padding:26px 20px 22px}}
 @media(prefers-reduced-motion:reduce){#joinDlg[open]{animation:none}}
+
+/* ===== 모바일 깜빡임 완화 · 로그인 피드백 ===== */
+.on .in>*{animation-duration:.55s;animation-delay:calc(var(--i,0)*35ms)}
+@media(max-width:760px),(pointer:coarse){
+.on .in>*{animation:none}
+main>*{will-change:auto}
+main .cards figure,main .tw,main .stats div,main .vals>div,main .tl div,main .seasons div,main .champ div,main .who span,main .tabs button,main .hint{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background-color:rgba(255,255,255,.09)}
+}
+#jMsg{margin:2px 0 12px}
+#jToast{position:fixed;left:50%;bottom:calc(72px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);z-index:60;max-width:calc(100% - 32px);padding:12px 22px;border-radius:999px;background:rgba(14,40,24,.96);border:1px solid rgba(200,170,107,.55);color:#efece4;font:500 14px "Noto Sans KR",sans-serif;box-shadow:0 12px 36px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .4s,transform .4s;text-align:center}
+#jToast.show{opacity:1;transform:translate(-50%,0)}
+.authed .burger{position:relative}
+.authed .burger::after{content:"";position:absolute;top:7px;right:7px;width:9px;height:9px;border-radius:50%;background:#c8aa6b;box-shadow:0 0 8px #c8aa6b}
+
+/* ===== 모바일 경량 전환: 3D·복제 화면 없이 가운데에서 열리는 방식 ===== */
+@media(max-width:760px),(pointer:coarse){
+main{perspective:none}
+main>*{transform:none;-webkit-backface-visibility:visible;backface-visibility:visible;box-shadow:none;filter:none}
+}
 </style>
 </head>
 <body>
@@ -700,6 +719,7 @@ function mk(src){var d=[];for(var k=0;k<2;k++){var c=src.cloneNode(true);c.remov
 c.classList.add('door');c.inert=true;c.setAttribute('aria-hidden','true');
 c.style.visibility='visible';c.style.zIndex=50;c.style.transition='none';
 c.style.clipPath=k?'inset(0 0 0 49.9%)':'inset(0 49.9% 0 0)';c.style.transformOrigin=k?'100% 50%':'0 50%';
+[].forEach.call(c.querySelectorAll('img'),function(i){i.loading='eager';i.decoding='sync'});
 m.appendChild(c);c.scrollTop=src.scrollTop;d.push(c)}return d}
 function ang(d,o){d[0].style.transform='rotateY('+(100*o).toFixed(2)+'deg)';d[1].style.transform='rotateY('+(-100*o).toFixed(2)+'deg)';
 d[0].style.filter=d[1].style.filter='brightness('+(1-.4*o).toFixed(3)+')'}
@@ -707,7 +727,12 @@ function anim(d,o0,o1,cb){var dur=Math.round(D*Math.abs(o1-o0));ang(d,o0);void d
 var t='transform '+dur+'ms '+E+',filter '+dur+'ms '+E;d.forEach(function(c){c.style.transition=t});ang(d,o1);setTimeout(cb,dur+40)}
 function rm(d){d.forEach(function(c){c.remove()})}
 function fin(){busy=false;if(pend!==null){var p=pend;pend=null;if(p!==cur)go(p)}}
-function go(t){t=Math.max(0,Math.min(n-1,t));if(busy){pend=t;return}if(t===cur)return;busy=true;var f=cur,d;
+function lite(){return matchMedia('(max-width:760px),(pointer:coarse)').matches}
+function goLite(f,t){var fw=t>f,top=fw?pg[t]:pg[f];pg[t].scrollTop=0;show(t);cur=t;upd();
+top.style.zIndex=5;top.style.transition='none';top.style.clipPath=fw?'inset(0 50% 0 50%)':'inset(0 0 0 0)';void top.offsetWidth;
+var ms=Math.round(D*.8);top.style.transition='clip-path '+ms+'ms '+E;top.style.clipPath=fw?'inset(0 0 0 0)':'inset(0 50% 0 50%)';
+setTimeout(function(){top.style.clipPath='';top.style.transition='';top.style.zIndex=1;hide(f);fin()},ms+40)}
+function go(t){t=Math.max(0,Math.min(n-1,t));if(busy){pend=t;return}if(t===cur)return;busy=true;var f=cur,d;if(lite()){goLite(f,t);return}
 if(t>f){d=mk(pg[f]);pg[t].scrollTop=0;show(t);hide(f);cur=t;upd();anim(d,0,1,function(){rm(d);fin()})}
 else{pg[t].scrollTop=0;d=mk(pg[t]);cur=t;upd();anim(d,1,0,function(){show(t);hide(f);rm(d);fin()})}}
 [pv,el].forEach(function(b){b.onclick=function(){go(cur-1)}});[nx,er].forEach(function(b){b.onclick=function(){go(cur+1)}});
@@ -719,6 +744,8 @@ m.addEventListener('dragstart',function(e){e.preventDefault()});
 m.addEventListener('click',function(e){if(moved){e.stopPropagation();e.preventDefault()}},true);
 m.addEventListener('pointerdown',function(e){if(busy||e.button>0||!e.isPrimary)return;var t=e.target;if(t.closest('input,textarea,select'))return;var w=t.closest('.tw');if(w&&w.scrollWidth>w.clientWidth+2)return;dg={x:e.clientX,y:e.clientY,t:performance.now(),mode:0,id:e.pointerId}});
 m.addEventListener('pointermove',function(e){if(!dg||e.pointerId!==dg.id)return;var dx=e.clientX-dg.x,dy=e.clientY-dg.y;
+if(dg.mode===2)return;
+if(dg.mode===0&&lite()&&Math.abs(dx)>=8&&Math.abs(dx)>Math.abs(dy)*1.2){if((dx<0&&cur<n-1)||(dx>0&&cur>0)){dg.mode=2;dg.dir=dx<0?1:-1;moved=true;try{m.setPointerCapture(e.pointerId)}catch(_){}}else{dg=null}return}
 if(dg.mode===0){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;
 if(Math.abs(dx)>Math.abs(dy)*1.2){
 if(dx<0&&cur<n-1){dg.dir=1;busy=true;dg.d=mk(pg[cur]);pg[cur+1].scrollTop=0;show(cur+1);hide(cur)}
@@ -727,7 +754,9 @@ else{dg=null;return}
 dg.mode=1;m.style.userSelect='none';try{m.setPointerCapture(e.pointerId)}catch(_){}
 }else{dg=null;return}}
 var p=Math.max(0,Math.min(1,(dg.dir===1?-dx:dx)/m.clientWidth));dg.p=p;dg.o=dg.dir===1?p:1-p;ang(dg.d,dg.o);moved=true});
-function end(e,cancel){if(!dg||e.pointerId!==dg.id)return;var d=dg;dg=null;if(d.mode!==1)return;
+function end(e,cancel){if(!dg||e.pointerId!==dg.id)return;var d=dg;dg=null;
+if(d.mode===2){var x=e.clientX-d.x;if(!cancel&&Math.abs(x)>50&&((d.dir===1&&x<0)||(d.dir===-1&&x>0)))go(cur+d.dir);setTimeout(function(){moved=false},0);return}
+if(d.mode!==1)return;
 var dx=e.clientX-d.x,fast=Math.abs(dx)/(performance.now()-d.t)>.5&&Math.abs(dx)>40;
 var done=!cancel&&(d.p>.28||(fast&&(d.dir===1?dx<0:dx>0)));
 var o1=done?(d.dir===1?1:0):(d.dir===1?0:1);m.style.userSelect='';
@@ -850,10 +879,11 @@ function say(t,ok){msg.textContent=t;msg.className=ok?'ok':''}
 function store(v){try{if(v)localStorage.setItem(TK,v);else localStorage.removeItem(TK)}catch(_){}}
 function token(){try{return localStorage.getItem(TK)||''}catch(_){return ''}}
 function api(action,data){return fetch(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action:action},data))}).then(function(r){return r.json()})}
-function tab(n){var a=n===1;t1.setAttribute('aria-selected',a);t2.setAttribute('aria-selected',!a);su.hidden=!a;li.hidden=a;say('')}
+function tab(n){var a=n===1;t1.setAttribute('aria-selected',a);t2.setAttribute('aria-selected',!a);su.hidden=!a;li.hidden=a;var f=a?su:li;f.insertBefore(msg,f.querySelector('.jsub'));say('')}
 t1.onclick=function(){tab(1)};t2.onclick=function(){tab(2)};
-function setLabel(t){document.querySelectorAll('[data-join]').forEach(function(b){b.textContent=t})}
-function logout(){var t=token();store('');logged=false;setLabel('로그인·가입');if(t&&!preview())api('logout',{token:t}).catch(function(){})}
+function setLabel(t){document.querySelectorAll('[data-join]').forEach(function(b){b.textContent=t});document.documentElement.classList.toggle('authed',t==='로그아웃')}
+function toast(t){var e=$('jToast');if(!e){e=document.createElement('div');e.id='jToast';e.setAttribute('role','status');document.body.appendChild(e)}e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('show')},3500)}
+function logout(){var t=token();store('');logged=false;setLabel('로그인·가입');toast('로그아웃되었습니다.');if(t&&!preview())api('logout',{token:t}).catch(function(){})}
 document.addEventListener('click',function(e){var b=e.target.closest('[data-join]');if(!b)return;e.preventDefault();
 var hd=document.querySelector('header');if(hd&&hd.classList.contains('open')){var bg=hd.querySelector('.burger');if(bg)bg.click()}
 if(logged){logout();return}
@@ -889,10 +919,12 @@ li.addEventListener('submit',async function(e){e.preventDefault();
 var em=li.elements.namedItem('lemail').value.trim(),pw=li.elements.namedItem('lpw').value;
 if(!em||!pw){say('이메일과 비밀번호를 입력해 주세요.');return}
 if(preview()){say('미리보기 모드입니다. 서버 연동 후 로그인할 수 있습니다.');return}
+var lb=li.querySelector('.jsub');lb.disabled=true;say('로그인 중입니다… 잠시만 기다려 주세요.',1);
 try{var r=await api('login',{email:em,password:pw});
-if(r.ok){store(r.token);remember(em,pw);li.reset();logged=true;setLabel('로그아웃');dlg.close()}
-else say(r.code==='pending'?'현재 심사 중입니다. 승인 후 로그인하실 수 있습니다.':r.code==='locked'?'로그인 시도가 많아 잠시 후 다시 시도해 주세요.':'이메일 또는 비밀번호를 확인해 주세요.')
-}catch(err){say('처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')}});
+if(r.ok){store(r.token);remember(em,pw);li.reset();logged=true;setLabel('로그아웃');dlg.close();toast((r.name?r.name+'님, ':'')+'로그인되었습니다.')}
+else say(r.code==='pending'?'가입 신청이 접수되어 심사 중입니다. 승인 후 로그인하실 수 있습니다.':r.code==='locked'?'로그인 시도가 많아 잠시 후 다시 시도해 주세요.':'이메일 또는 비밀번호를 확인해 주세요.')
+}catch(err){console.error(err);say('서버 응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요.')}
+lb.disabled=false});
 var UK='cp_uid';
 function loadId(){var v='';try{v=localStorage.getItem(UK)||''}catch(_){}li.elements.namedItem('lemail').value=v;$('saveId').checked=!!v;$('savePw').checked=false}
 function remember(em,pw){try{if($('saveId').checked)localStorage.setItem(UK,em);else localStorage.removeItem(UK)}catch(_){}
