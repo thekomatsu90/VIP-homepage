@@ -491,13 +491,35 @@ main .cards figure,main .tw,main .stats div,main .vals>div,main .tl div,main .se
 main{perspective:none}
 main>*{transform:none;-webkit-backface-visibility:visible;backface-visibility:visible;box-shadow:none;filter:none}
 }
+
+/* ===== 공지게시판 · 로그인 유도 ===== */
+.jgate{font-size:13.5px;line-height:1.6;color:#efece4;background:rgba(200,170,107,.16);border:1px solid rgba(200,170,107,.5);border-radius:12px;padding:10px 14px;margin:0 0 14px}
+.jf textarea{width:100%;font:400 16px/1.7 "Noto Sans KR",sans-serif;color:var(--ink);background:rgba(255,255,255,.06);border:1px solid var(--gb);border-radius:14px;padding:13px 16px;resize:vertical;min-height:140px;transition:border-color .3s,background .3s}
+.jf textarea:focus{outline:none;border-color:var(--brass);background:rgba(255,255,255,.1)}
+.ntool{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;margin-top:6px;color:var(--mute);font-size:13.5px}
+.nbtn{font:600 14px "Noto Sans KR",sans-serif;color:var(--ink);background:rgba(255,255,255,.09);border:1px solid var(--gb);border-radius:999px;padding:9px 18px;cursor:pointer;transition:transform .3s,background .3s}
+.nbtn:hover{background:rgba(255,255,255,.15)}.nbtn.pri{color:#06130b;background:linear-gradient(135deg,#ead7a4,#c8aa6b);border:0}.nbtn:disabled{opacity:.55;cursor:wait}
+.nbtn:focus-visible,.nh:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.nform{margin:8px 0 18px;padding:22px;border:1px solid var(--gb);border-radius:22px;background:var(--gl)}
+.nact{display:flex;gap:8px;margin-top:12px}
+#nMsg{min-height:1.6em;margin:10px 0 0;font-size:13.5px;color:#f0b9a8}#nMsg.ok{color:#a9dcb7}
+.nlist{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+.ni{border:1px solid var(--gb);border-radius:18px;background:var(--gl);overflow:hidden}
+.nh{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;width:100%;padding:16px 18px;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.nh b{font:500 16px/1.5 "Noto Sans KR",sans-serif;word-break:keep-all}
+.nh time{font:500 12px Manrope,sans-serif;letter-spacing:.06em;color:var(--mute);white-space:nowrap}
+.np{font:600 11px Manrope,"Noto Sans KR",sans-serif;letter-spacing:.1em;padding:4px 10px;border-radius:999px;border:1px solid var(--gb);color:var(--mute)}
+.np.pin{color:#06130b;background:var(--brass);border-color:var(--brass)}
+.nb{padding:2px 20px 20px}.nt{white-space:pre-wrap;line-height:1.95;color:#cfd8d1;font-size:15px;word-break:keep-all}
+.nadm{display:flex;gap:8px;margin-top:16px}
+@media(max-width:640px){.nh{grid-template-columns:auto 1fr;row-gap:4px}.nh time{grid-column:2}}
 </style>
 </head>
 <body>
 <header>
 <a class="logo" href="#top">THE CLUB PRIVÉ</a>
 <button class="burger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="gnb"><span></span><span></span></button>
-<nav id="gnb" aria-label="주요 메뉴"><a href="#top">홈</a><a href="#brand">브랜드</a><a href="#collection">컬렉션</a><a href="#pgawest">PGA WEST</a><a href="#company">회사소개</a><a href="#membership">멤버십</a><a href="#program">프로그램</a><a href="#founding">입회</a><button type="button" class="join" data-join>로그인·가입</button></nav>
+<nav id="gnb" aria-label="주요 메뉴"><a href="#top">홈</a><a href="#brand">브랜드</a><a href="#collection">컬렉션</a><a href="#pgawest">PGA WEST</a><a href="#company">회사소개</a><a href="#membership">멤버십</a><a href="#program">프로그램</a><a href="#notice">공지사항</a><a href="#founding">입회</a><button type="button" class="join" data-join>로그인·가입</button></nav>
 </header>
 
 <div class="stage"><main id="top">
@@ -644,6 +666,20 @@ main>*{transform:none;-webkit-backface-visibility:visible;backface-visibility:vi
 <p class="note">소수 멤버가 충분히 교류할 수 있는 규모로 운영함. 세부 일정과 대회 관람·Hospitality 범위는 매년 확보된 조건에 따라 확정함. 미국은 PGA 대회 갤러리 참가권과 대회 종료 후 라운드(선착순), 일본은 골프·숙박·식사를 제공함.</p>
 </div></section>
 
+<section id="notice"><div class="in">
+<p class="en">Notice</p><h2>공지사항</h2>
+<p class="lead">멤버 여러분께 전하는 안내와 소식입니다.</p>
+<div class="ntool"><span id="nStat" role="status" aria-live="polite"></span><button type="button" id="nNew" class="nbtn pri" hidden>공지 작성</button></div>
+<form id="nForm" class="nform" hidden novalidate>
+<div class="jf"><label for="nTitle">제목</label><input id="nTitle" type="text" maxlength="100" autocomplete="off"></div>
+<div class="jf"><label for="nBody">내용</label><textarea id="nBody" rows="7" maxlength="4000"></textarea></div>
+<label class="jc"><input type="checkbox" id="nPin"> 상단에 고정</label>
+<div class="nact"><button class="nbtn pri" type="submit" id="nSave">저장</button><button class="nbtn" type="button" id="nCancel">취소</button></div>
+<p id="nMsg" role="status" aria-live="polite"></p>
+</form>
+<ol id="nList" class="nlist"></ol>
+<p id="nEmpty" class="note" hidden>등록된 공지가 없습니다.</p>
+</div></section>
 <section id="founding"><div class="in">
 <p class="en" style="font-size:22px;margin:0 0 8px">By Invitation · By Review · The Founding 100</p>
 <h2>처음의 기준을 세우는<br>100인의 창립 멤버</h2>
@@ -710,7 +746,7 @@ function hide(i){pg[i].style.visibility='hidden';pg[i].inert=true}
 pg.forEach(function(p,i){p.style.zIndex=1;if(i>0)hide(i);
 var b=document.createElement('button');b.setAttribute('aria-label',(i+1)+'번째 페이지');b.onclick=function(){go(i)};dots.appendChild(b)});
 var lidx=links.map(function(a){return pageOf(document.querySelector(a.getAttribute('href')))});
-function upd(){pg.forEach(function(p,i){p.classList.toggle('on',i===cur)});var d=dots.children;for(var k=0;k<n;k++)d[k].setAttribute('aria-current',k===cur);
+function upd(){pg.forEach(function(p,i){p.classList.toggle('on',i===cur)});document.dispatchEvent(new CustomEvent('cp:page',{detail:{el:pg[cur],index:cur}}));var d=dots.children;for(var k=0;k<n;k++)d[k].setAttribute('aria-current',k===cur);
 ct.textContent=(cur+1)+' / '+n;pv.disabled=el.disabled=cur===0;nx.disabled=er.disabled=cur===n-1;
 var a=-1;lidx.forEach(function(v,k){if(v<=cur)a=k});links.forEach(function(l,k){l.setAttribute('aria-current',k===a)})}
 /* 양쪽으로 갈라지는 문 */
@@ -732,12 +768,13 @@ function goLite(f,t){var fw=t>f,top=fw?pg[t]:pg[f];pg[t].scrollTop=0;show(t);cur
 top.style.zIndex=5;top.style.transition='none';top.style.clipPath=fw?'inset(0 50% 0 50%)':'inset(0 0 0 0)';void top.offsetWidth;
 var ms=Math.round(D*.8);top.style.transition='clip-path '+ms+'ms '+E;top.style.clipPath=fw?'inset(0 0 0 0)':'inset(0 50% 0 50%)';
 setTimeout(function(){top.style.clipPath='';top.style.transition='';top.style.zIndex=1;hide(f);fin()},ms+40)}
-function go(t){t=Math.max(0,Math.min(n-1,t));if(busy){pend=t;return}if(t===cur)return;busy=true;var f=cur,d;if(lite()){goLite(f,t);return}
+function go(t){t=Math.max(0,Math.min(n-1,t));if(t!==0&&window.CP_AUTH!==true&&!window.CP_GATE_OFF){document.dispatchEvent(new CustomEvent('cp:needlogin',{detail:{page:t}}));return}if(busy){pend=t;return}if(t===cur)return;busy=true;var f=cur,d;if(lite()){goLite(f,t);return}
 if(t>f){d=mk(pg[f]);pg[t].scrollTop=0;show(t);hide(f);cur=t;upd();anim(d,0,1,function(){rm(d);fin()})}
 else{pg[t].scrollTop=0;d=mk(pg[t]);cur=t;upd();anim(d,1,0,function(){show(t);hide(f);rm(d);fin()})}}
 [pv,el].forEach(function(b){b.onclick=function(){go(cur-1)}});[nx,er].forEach(function(b){b.onclick=function(){go(cur+1)}});
 addEventListener('keydown',function(e){if(e.target.closest&&e.target.closest('input,textarea'))return;if(e.key==='ArrowRight')go(cur+1);else if(e.key==='ArrowLeft')go(cur-1)});
 document.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');if(!a)return;var t=document.querySelector(a.getAttribute('href'));if(!t)return;var i=pageOf(t);if(i<0)return;e.preventDefault();go(i)});
+document.addEventListener('cp:goto',function(e){go(e.detail.page)});document.addEventListener('cp:logout',function(){go(0)});
 /* 드래그 */
 var dg=null,moved=false;
 m.addEventListener('dragstart',function(e){e.preventDefault()});
@@ -748,6 +785,7 @@ if(dg.mode===2)return;
 if(dg.mode===0&&lite()&&Math.abs(dx)>=8&&Math.abs(dx)>Math.abs(dy)*1.2){if((dx<0&&cur<n-1)||(dx>0&&cur>0)){dg.mode=2;dg.dir=dx<0?1:-1;moved=true;try{m.setPointerCapture(e.pointerId)}catch(_){}}else{dg=null}return}
 if(dg.mode===0){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;
 if(Math.abs(dx)>Math.abs(dy)*1.2){
+if(dx<0&&cur<n-1&&window.CP_AUTH!==true&&!window.CP_GATE_OFF){document.dispatchEvent(new CustomEvent('cp:needlogin',{detail:{page:cur+1}}));dg=null;return}
 if(dx<0&&cur<n-1){dg.dir=1;busy=true;dg.d=mk(pg[cur]);pg[cur+1].scrollTop=0;show(cur+1);hide(cur)}
 else if(dx>0&&cur>0){dg.dir=-1;busy=true;pg[cur-1].scrollTop=0;dg.d=mk(pg[cur-1])}
 else{dg=null;return}
@@ -845,6 +883,7 @@ pages.forEach(function(p){mo.observe(p,{attributes:true,attributeFilter:['class'
 <button class="jx" type="button" aria-label="닫기" data-close>×</button>
 <p class="jeye">MEMBERSHIP</p><h2 id="jTitle">THE CLUB PRIVÉ 회원</h2>
 <div class="jtabs" role="tablist"><button type="button" role="tab" id="jt2" aria-selected="true" aria-controls="jp2">로그인</button><button type="button" role="tab" id="jt1" aria-selected="false" aria-controls="jp1">회원가입</button></div>
+<p class="jgate" id="jGate" hidden>회원 전용 콘텐츠입니다. 로그인하거나 회원가입 후 이용해 주세요.</p>
 <p class="jprev" id="jPrev" hidden>미리보기 모드 · 서버 연동 전이라 입력한 정보는 전송·저장되지 않습니다.</p>
 <form id="jp1" role="tabpanel" aria-labelledby="jt1" novalidate hidden>
 <div class="jf"><label for="name">성명</label><input id="name" name="name" type="text" autocomplete="name" required></div><div class="jf"><label for="email">이메일 (로그인 아이디)</label><input id="email" name="email" type="email" autocomplete="email" required inputmode="email"></div><div class="jf"><label for="phone">휴대폰 번호</label><input id="phone" name="phone" type="tel" autocomplete="tel" required inputmode="tel" placeholder="010-0000-0000"></div><div class="jf"><label for="pw">비밀번호</label><div class="pwr"><input id="pw" name="pw" type="password" autocomplete="new-password" required><button type="button" data-eye aria-label="비밀번호 표시">보기</button></div><small>영문과 숫자를 포함해 10자 이상</small></div><div class="jf"><label for="pw2">비밀번호 확인</label><div class="pwr"><input id="pw2" name="pw2" type="password" autocomplete="new-password" required><button type="button" data-eye aria-label="비밀번호 표시">보기</button></div></div><div class="jf"><label for="ref">추천인 (선택)</label><input id="ref" name="ref" type="text" autocomplete="off" ><small>추천 멤버 또는 한국산업양행 담당자</small></div>
@@ -869,25 +908,27 @@ pages.forEach(function(p){mo.observe(p,{attributes:true,attributeFilter:['class'
 <script>
 (function(){
 /* ▼ 운영 전 설정: Google Apps Script 웹 앱 URL(…/exec)을 입력하면 미리보기 모드가 해제됩니다. */
-var CONFIG={API_URL:'https://script.google.com/macros/s/AKfycbwhnNSU3vtvyPyfQFgU1cZvk8JnWz8TxX69evMwd0-D-5HYWb66kSBm5sZW3OiDUh-Uaw/exec'};
+var CONFIG={API_URL:''};
 var $=function(i){return document.getElementById(i)},dlg=$('joinDlg');
 if(!dlg||!dlg.showModal)return;
-var su=$('jp1'),li=$('jp2'),msg=$('jMsg'),prev=$('jPrev'),t1=$('jt1'),t2=$('jt2'),logged=false,lastBtn=null,TK='cp_token';
+var su=$('jp1'),li=$('jp2'),msg=$('jMsg'),prev=$('jPrev'),t1=$('jt1'),t2=$('jt2'),logged=false,lastBtn=null,TK='cp_token',gate=$('jGate'),pendingPage=null;
+window.CP_GATE_OFF=false; /* 로그인 전에는 항상 메인 1페이지만 공개 */window.CP_AUTH=false;window.CP_ADMIN=false;
 function g(n){return su.elements.namedItem(n)}
 function preview(){return !CONFIG.API_URL}
 function say(t,ok){msg.textContent=t;msg.className=ok?'ok':''}
 function store(v){try{if(v)localStorage.setItem(TK,v);else localStorage.removeItem(TK)}catch(_){}}
 function token(){try{return localStorage.getItem(TK)||''}catch(_){return ''}}
-function api(action,data){return fetch(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action:action},data))}).then(function(r){return r.json()})}
+function api(action,data){var ac=window.AbortController?new AbortController():null,tm=setTimeout(function(){if(ac)ac.abort()},45000);
+return fetch(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action:action},data)),signal:ac?ac.signal:undefined}).then(function(r){return r.json()}).finally(function(){clearTimeout(tm)})}
 function tab(n){var a=n===1;t1.setAttribute('aria-selected',a);t2.setAttribute('aria-selected',!a);su.hidden=!a;li.hidden=a;var f=a?su:li;f.insertBefore(msg,f.querySelector('.jsub'));say('')}
 t1.onclick=function(){tab(1)};t2.onclick=function(){tab(2)};
-function setLabel(t){document.querySelectorAll('[data-join]').forEach(function(b){b.textContent=t});document.documentElement.classList.toggle('authed',t==='로그아웃')}
+function setLabel(t){document.querySelectorAll('[data-join]').forEach(function(b){b.textContent=t});document.documentElement.classList.toggle('authed',t==='로그아웃');window.CP_AUTH=(t==='로그아웃');nAt=0}
 function toast(t){var e=$('jToast');if(!e){e=document.createElement('div');e.id='jToast';e.setAttribute('role','status');document.body.appendChild(e)}e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('show')},3500)}
-function logout(){var t=token();store('');logged=false;setLabel('로그인·가입');toast('로그아웃되었습니다.');if(t&&!preview())api('logout',{token:t}).catch(function(){})}
+function logout(){var t=token();store('');logged=false;setLabel('로그인·가입');toast('로그아웃되었습니다.');window.CP_ADMIN=false;document.dispatchEvent(new CustomEvent('cp:logout'));if(t&&!preview())api('logout',{token:t}).catch(function(){})}
 document.addEventListener('click',function(e){var b=e.target.closest('[data-join]');if(!b)return;e.preventDefault();
 var hd=document.querySelector('header');if(hd&&hd.classList.contains('open')){var bg=hd.querySelector('.burger');if(bg)bg.click()}
 if(logged){logout();return}
-lastBtn=b;prev.hidden=!preview();tab(2);loadId();dlg.showModal()});
+lastBtn=b;gate.hidden=true;pendingPage=null;prev.hidden=!preview();tab(2);loadId();dlg.showModal()});
 dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()});
 dlg.addEventListener('keydown',function(e){e.stopPropagation()});
 dlg.addEventListener('close',function(){if(lastBtn&&document.contains(lastBtn))lastBtn.focus()});
@@ -918,19 +959,62 @@ b.disabled=false});
 li.addEventListener('submit',async function(e){e.preventDefault();
 var em=li.elements.namedItem('lemail').value.trim(),pw=li.elements.namedItem('lpw').value;
 if(!em||!pw){say('이메일과 비밀번호를 입력해 주세요.');return}
-if(preview()){say('미리보기 모드입니다. 서버 연동 후 로그인할 수 있습니다.');return}
-var lb=li.querySelector('.jsub');lb.disabled=true;say('로그인 중입니다… 잠시만 기다려 주세요.',1);
+if(preview()){say('로그인 서버가 아직 연결되지 않았습니다. 관리자에게 문의해 주세요.');return}
+var lb=li.querySelector('.jsub');lb.disabled=true;say('로그인 중입니다… 잠시만 기다려 주세요.',1);var slow=setTimeout(function(){say('서버 응답을 기다리는 중입니다. 처음 접속 시 10~20초 걸릴 수 있습니다…',1)},5000);
 try{var r=await api('login',{email:em,password:pw});
-if(r.ok){store(r.token);remember(em,pw);li.reset();logged=true;setLabel('로그아웃');dlg.close();toast((r.name?r.name+'님, ':'')+'로그인되었습니다.')}
-else say(r.code==='pending'?'가입 신청이 접수되어 심사 중입니다. 승인 후 로그인하실 수 있습니다.':r.code==='locked'?'로그인 시도가 많아 잠시 후 다시 시도해 주세요.':'이메일 또는 비밀번호를 확인해 주세요.')
-}catch(err){console.error(err);say('서버 응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요.')}
-lb.disabled=false});
+if(r.ok){store(r.token);remember(em,pw);li.reset();logged=true;setLabel('로그아웃');dlg.close();window.CP_ADMIN=!!r.admin;toast((r.name?r.name+'님, ':'')+'로그인되었습니다.');var pp=pendingPage;pendingPage=null;if(pp!=null)setTimeout(function(){document.dispatchEvent(new CustomEvent('cp:goto',{detail:{page:pp}}))},350)}
+else say(r.code==='pending'?'가입 신청이 접수되어 심사 중입니다. 승인 후 로그인하실 수 있습니다.':r.code==='locked'?'로그인 시도가 많아 잠시 후 다시 시도해 주세요.':r.code==='error'?('서버 처리 중 오류가 발생했습니다.'+(r.detail?' ('+r.detail+')':'')):'이메일 또는 비밀번호를 확인해 주세요.')
+}catch(err){console.error(err);say('서버 응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요. ('+String(err&&err.message||err)+')')}
+clearTimeout(slow);lb.disabled=false});
 var UK='cp_uid';
 function loadId(){var v='';try{v=localStorage.getItem(UK)||''}catch(_){}li.elements.namedItem('lemail').value=v;$('saveId').checked=!!v;$('savePw').checked=false}
 function remember(em,pw){try{if($('saveId').checked)localStorage.setItem(UK,em);else localStorage.removeItem(UK)}catch(_){}
 if($('savePw').checked&&window.PasswordCredential&&navigator.credentials){try{var p=navigator.credentials.store(new PasswordCredential({id:em,password:pw,name:em}));if(p&&p.catch)p.catch(function(){})}catch(_){}}}
 $('jForgot').onclick=function(){say('비밀번호 재설정은 담당 Membership Director에게 문의해 주세요.',1)};
-if(!preview()&&token()){api('me',{token:token()}).then(function(r){if(r.ok){logged=true;setLabel('로그아웃')}else store('')}).catch(function(){})}
+
+/* ===== 로그인 유도 · 공지게시판 ===== */
+document.addEventListener('cp:needlogin',function(e){if(dlg.open)return;
+var hd=document.querySelector('header');if(hd&&hd.classList.contains('open')){var bg=hd.querySelector('.burger');if(bg)bg.click()}
+pendingPage=e.detail&&e.detail.page!=null?e.detail.page:null;lastBtn=document.querySelector('[data-join]');gate.hidden=false;prev.hidden=!preview();tab(2);loadId();dlg.showModal()});
+dlg.addEventListener('close',function(){pendingPage=null});
+function expire(){store('');logged=false;setLabel('로그인·가입');window.CP_ADMIN=false;document.dispatchEvent(new CustomEvent('cp:logout'));toast('로그인이 만료되었습니다. 다시 로그인해 주세요.')}
+var nl=$('nList'),nf=$('nForm'),ne=$('nEmpty'),nn=$('nNew'),ns=$('nStat'),nm=$('nMsg'),nId=null,nAt=0;
+var nSample=[{id:'s1',title:'[예시] 2027 PGA WEST Tournament Week 일정 안내',body:'공지 작성 화면 미리보기용 예시입니다.\n서버 연동 후에는 관리자가 작성한 공지가 이곳에 표시됩니다.',pinned:true,date:'2026.10.16'},{id:'s2',title:'[예시] 멤버 라운드 예약 안내',body:'예약 요청은 전담 Membership Director를 통해 접수됩니다.',pinned:false,date:'2026.10.10'}];
+function mk2(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function nmsg(t,ok){nm.textContent=t;nm.className=ok?'ok':''}
+function nForm(open,it){nf.hidden=!open;nn.hidden=open||!(window.CP_ADMIN||preview());if(open){nId=it?it.id:null;$('nTitle').value=it?it.title:'';$('nBody').value=it?it.body:'';$('nPin').checked=it?!!it.pinned:false;nmsg('');$('nTitle').focus()}}
+function nRender(items,admin){nl.textContent='';ne.hidden=items.length>0;nf.hidden=true;nn.hidden=!admin;
+items.forEach(function(it){var row=mk2('li','ni'),hd=mk2('button','nh');hd.type='button';hd.setAttribute('aria-expanded','false');
+hd.appendChild(mk2('span','np'+(it.pinned?' pin':''),it.pinned?'고정':'공지'));hd.appendChild(mk2('b','',it.title));hd.appendChild(mk2('time','',it.date));
+var bd=mk2('div','nb');bd.hidden=true;bd.appendChild(mk2('div','nt',it.body));
+if(admin){var ad=mk2('div','nadm'),ed=mk2('button','nbtn','수정'),dl=mk2('button','nbtn','삭제');ed.type=dl.type='button';ed.onclick=function(){nForm(true,it)};dl.onclick=function(){nDel(it)};ad.appendChild(ed);ad.appendChild(dl);bd.appendChild(ad)}
+hd.onclick=function(){var o=hd.getAttribute('aria-expanded')==='true';hd.setAttribute('aria-expanded',String(!o));bd.hidden=o};
+row.appendChild(hd);row.appendChild(bd);nl.appendChild(row)})}
+function nLoad(force){
+if(preview()){nRender(nSample,true);ns.textContent='미리보기 예시입니다.';return}
+if(window.CP_AUTH!==true)return;
+if(!force&&Date.now()-nAt<30000)return;
+ns.textContent='불러오는 중입니다…';
+api('notices',{token:token()}).then(function(r){
+if(r.ok){nAt=Date.now();window.CP_ADMIN=!!r.admin;ns.textContent='';nRender(r.items||[],!!r.admin)}
+else if(r.code==='auth')expire();
+else ns.textContent='공지를 불러오지 못했습니다.'+(r.detail?' ('+r.detail+')':'')
+}).catch(function(){ns.textContent='공지를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'})}
+document.addEventListener('cp:page',function(e){if(e.detail.el&&e.detail.el.id==='notice')nLoad(false)});
+nn.onclick=function(){nForm(true,null)};
+$('nCancel').onclick=function(){nf.hidden=true;nn.hidden=!(window.CP_ADMIN||preview())};
+nf.addEventListener('submit',function(e){e.preventDefault();var t=$('nTitle').value.trim(),b=$('nBody').value.trim();
+if(!t){nmsg('제목을 입력해 주세요.');return}if(!b){nmsg('내용을 입력해 주세요.');return}
+if(preview()){nmsg('미리보기 모드입니다. 서버 연동 후 저장됩니다.');return}
+var sv=$('nSave');sv.disabled=true;nmsg('저장 중입니다…',1);
+api('notice_save',{token:token(),id:nId,title:t,body:b,pinned:$('nPin').checked}).then(function(r){
+if(r.ok){nf.reset();nId=null;nmsg('');nLoad(true);toast('공지가 저장되었습니다.')}
+else if(r.code==='auth')expire();
+else nmsg(r.code==='forbidden'?'관리자 권한이 필요합니다.':'저장하지 못했습니다.'+(r.detail?' ('+r.detail+')':''))
+}).catch(function(){nmsg('서버 응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요.')}).finally(function(){sv.disabled=false})});
+function nDel(it){if(!confirm('"'+it.title+'" 공지를 삭제하시겠습니까?'))return;if(preview()){toast('미리보기 모드입니다.');return}
+api('notice_delete',{token:token(),id:it.id}).then(function(r){if(r.ok){nLoad(true);toast('공지가 삭제되었습니다.')}else if(r.code==='auth')expire();else toast('삭제하지 못했습니다.')}).catch(function(){toast('서버 응답을 받지 못했습니다.')})}
+if(!preview()&&token()){api('me',{token:token()}).then(function(r){if(r.ok){logged=true;window.CP_ADMIN=!!r.admin;setLabel('로그아웃')}else store('')}).catch(function(){})}
 })();
 </script>
 </body>
