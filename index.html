@@ -519,7 +519,7 @@ main>*{transform:none;-webkit-backface-visibility:visible;backface-visibility:vi
 <header>
 <a class="logo" href="#top">THE CLUB PRIVÉ</a>
 <button class="burger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="gnb"><span></span><span></span></button>
-<nav id="gnb" aria-label="주요 메뉴"><a href="#top">홈</a><a href="#brand">브랜드</a><a href="#collection">컬렉션</a><a href="#pgawest">PGA WEST</a><a href="#company">회사소개</a><a href="#membership">멤버십</a><a href="#program">프로그램</a><a href="#notice">공지사항</a><a href="#founding">입회</a><button type="button" class="join" data-join>로그인·가입</button></nav>
+<nav id="gnb" aria-label="주요 메뉴"><a href="#top">홈</a><a href="#brand">브랜드</a><a href="#collection">컬렉션</a><a href="#pgawest">PGA WEST</a><a href="#company">회사소개</a><a href="#membership">멤버십</a><a href="#program">프로그램</a><a href="#founding">입회</a><a href="#notice">공지사항</a><button type="button" class="join" data-join>로그인·가입</button></nav>
 </header>
 
 <div class="stage"><main id="top">
@@ -666,20 +666,6 @@ main>*{transform:none;-webkit-backface-visibility:visible;backface-visibility:vi
 <p class="note">소수 멤버가 충분히 교류할 수 있는 규모로 운영함. 세부 일정과 대회 관람·Hospitality 범위는 매년 확보된 조건에 따라 확정함. 미국은 PGA 대회 갤러리 참가권과 대회 종료 후 라운드(선착순), 일본은 골프·숙박·식사를 제공함.</p>
 </div></section>
 
-<section id="notice"><div class="in">
-<p class="en">Notice</p><h2>공지사항</h2>
-<p class="lead">멤버 여러분께 전하는 안내와 소식입니다.</p>
-<div class="ntool"><span id="nStat" role="status" aria-live="polite"></span><button type="button" id="nNew" class="nbtn pri" hidden>공지 작성</button></div>
-<form id="nForm" class="nform" hidden novalidate>
-<div class="jf"><label for="nTitle">제목</label><input id="nTitle" type="text" maxlength="100" autocomplete="off"></div>
-<div class="jf"><label for="nBody">내용</label><textarea id="nBody" rows="7" maxlength="4000"></textarea></div>
-<label class="jc"><input type="checkbox" id="nPin"> 상단에 고정</label>
-<div class="nact"><button class="nbtn pri" type="submit" id="nSave">저장</button><button class="nbtn" type="button" id="nCancel">취소</button></div>
-<p id="nMsg" role="status" aria-live="polite"></p>
-</form>
-<ol id="nList" class="nlist"></ol>
-<p id="nEmpty" class="note" hidden>등록된 공지가 없습니다.</p>
-</div></section>
 <section id="founding"><div class="in">
 <p class="en" style="font-size:22px;margin:0 0 8px">By Invitation · By Review · The Founding 100</p>
 <h2>처음의 기준을 세우는<br>100인의 창립 멤버</h2>
@@ -720,6 +706,20 @@ main>*{transform:none;-webkit-backface-visibility:visible;backface-visibility:vi
 <p class="note" style="margin-top:28px">입회 상담 접수<br>한국산업양행 회원관리팀<br><a href="tel:0220511242" style="color:inherit">02-2051-1242</a></p>
 <p style="margin-top:10px"><a class="btn" href="http://www.hki.co.kr/" target="_blank" rel="noopener noreferrer">한국산업양행 홈페이지</a></p>
 <footer>본 사이트의 내용은 이해를 돕기 위한 사전 안내이며 상황에 따라 변동될 수 있음. 최종 권리·의무는 HKI 정관 및 상환우선주 발행 조건, 주식인수 관련 서류, 해외법인의 VIP 멤버십 계약·약관 및 관계 법령에 따라 확정됨.<br>© THE CLUB PRIVÉ · (주)한국산업양행(HKI) HANKUK IND Co., Ltd.</footer></div></section>
+<section id="notice"><div class="in">
+<p class="en">Notice</p><h2>공지사항</h2>
+<p class="lead">멤버 여러분께 전하는 안내와 소식입니다.</p>
+<div class="ntool"><span id="nStat" role="status" aria-live="polite"></span><button type="button" id="nNew" class="nbtn pri" hidden>공지 작성</button></div>
+<form id="nForm" class="nform" hidden novalidate>
+<div class="jf"><label for="nTitle">제목</label><input id="nTitle" type="text" maxlength="100" autocomplete="off"></div>
+<div class="jf"><label for="nBody">내용</label><textarea id="nBody" rows="7" maxlength="4000"></textarea></div>
+<label class="jc"><input type="checkbox" id="nPin"> 상단에 고정</label>
+<div class="nact"><button class="nbtn pri" type="submit" id="nSave">저장</button><button class="nbtn" type="button" id="nCancel">취소</button></div>
+<p id="nMsg" role="status" aria-live="polite"></p>
+</form>
+<ol id="nList" class="nlist"></ol>
+<p id="nEmpty" class="note" hidden>등록된 공지가 없습니다.</p>
+</div></section>
 </main><button class="edge l" id="el" aria-label="이전 페이지">‹</button><button class="edge r" id="er" aria-label="다음 페이지">›</button></div>
 <a class="fab" href="tel:0220511242" aria-label="한국산업양행 회원관리팀 전화 연결"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></a>
 <div class="pager"><button id="pv" aria-label="이전 페이지">‹</button><div id="dots"></div><span id="ct" aria-live="polite">1 / 1</span><button id="nx" aria-label="다음 페이지">›</button></div>
