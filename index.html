@@ -908,7 +908,7 @@ pages.forEach(function(p){mo.observe(p,{attributes:true,attributeFilter:['class'
 <script>
 (function(){
 /* ▼ 운영 전 설정: Google Apps Script 웹 앱 URL(…/exec)을 입력하면 미리보기 모드가 해제됩니다. */
-var CONFIG={API_URL:''};
+var CONFIG={API_URL:'https://script.google.com/macros/s/AKfycbz8CwtXWdxZAuDkhPkNwHH8dPYrojTXeuwinGctfrLv_F05o5QcIMumKC-kgWjPmzs_-A/exec'};
 var $=function(i){return document.getElementById(i)},dlg=$('joinDlg');
 if(!dlg||!dlg.showModal)return;
 var su=$('jp1'),li=$('jp2'),msg=$('jMsg'),prev=$('jPrev'),t1=$('jt1'),t2=$('jt2'),logged=false,lastBtn=null,TK='cp_token',gate=$('jGate'),pendingPage=null;
